@@ -1,6 +1,7 @@
 <h1> <%= @idea.title %> </h1>
 <p> <%= @idea.body %> </p>
 <p><small> Created <%= time_ago_in_words(@idea.created_at) %> ago </small></p>
+<p><small> Created by <%= @idea.user.first_name %> </small></p>
 <div class="d-flex">
     <div class="m-1">
         <%= link_to 'Edit', edit_idea_path(@idea), class:"btn btn-outline-primary" %>
@@ -47,7 +48,7 @@
 
 <div>
  <%= review.body %> <br>
- <small> Commented <%= time_ago_in_words(review.created_at) %> ago
+ <small> Commented <%= time_ago_in_words(review.created_at) %> ago by <%= review.user.first_name %> ⦁ </small>
  <%=link_to "Delete", idea_review_path(@idea.id, review.id), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %>
 </div>
 <br>
