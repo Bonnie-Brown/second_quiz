@@ -1,0 +1,12 @@
+<h1> <%= @idea.title %> </h1>
+<p> <%= @idea.body %> </p>
+<p><small> Created <%= time_ago_in_words(@idea.created_at) %> ago </small></p>
+<div class="d-flex">
+    <div class="m-1">
+        <%= link_to 'Edit', edit_idea_path(@idea), class:"btn btn-outline-primary" %>
+    </div>
+ 
+    <div class="m-1">
+        <%= button_to 'Delete', idea_path(@idea), method: :delete, form: {data: {turbo_confirm: "Are you sure you would like to proceed?"}}, class:"btn btn-outline-primary" %>
+    </div>
+</div>

@@ -1,0 +1,31 @@
+<%= form_with(model: @idea) do |form| %>
+
+<% if @idea.errors.any? %>
+<ul>
+ <% @idea.errors.full_messages.each do |message| %>
+
+ <li> <%= message %> </li>
+
+ <% end %>
+
+</ul>
+
+ <% end %>
+
+<div>
+<%= form.label :title %>
+<br>
+<%= form.text_field :title %>
+</div>
+<br>
+<div>
+<%= form.label :body %>
+<br>
+<%= form.text_area :body, cols: 50, rows: 5 %>
+</div>
+
+<br>
+
+<%= form.submit class:"btn btn-outline-primary" %>
+
+<% end %>
