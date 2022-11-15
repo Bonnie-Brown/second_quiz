@@ -4,18 +4,31 @@ RSpec.describe IdeasController, type: :controller do
 
     describe '#new' do
 
-        it 'requires a render of a new template' do
+        context 'with signed in user' do
+            before do
+                session[:user_id] = FactoryBot.create(:user).id
+            end
 
-            get(:new)
-            expect(response).to(render_template(:new))
+            it 'requires a render of a new template' do
 
+                get(:new)
+                expect(response).to(render_template(:new))
+
+            end
+
+            it 'requires setting an instance variable with a new idea' do
+
+                get(:new)
+                expect(assigns(:idea)).to(be_a_new(Idea))
+
+            end
         end
 
-        it 'requires setting an instance variable with a new idea' do
-
-            get(:new)
-            expect(assigns(:idea)).to(be_a_new(Idea))
-
+        context "without signed in user" do
+            it "should redirect to the sign in page" do
+                get(:new)
+                expect(response).to redirect_to(new_session_path)
+            end
         end
     end
 
@@ -27,50 +40,57 @@ RSpec.describe IdeasController, type: :controller do
             })
         end
 
-        context 'with valid parameters' do
+        context "with signed in user" do
 
-            it 'requires a new creation of a job post in the database' do
-               
-                count_before = Idea.count
-                valid_request
-                count_after = Idea.count
-                expect(count_after).to(eq(count_before + 1))
-
+            before do
+                session[:user_id] = FactoryBot.create(:user).id
             end
 
-            it 'requires a redirect to the show page for the new idea' do
+            context 'with valid parameters' do
 
-                valid_request
-                idea = Idea.last
-                expect(response).to(redirect_to(idea))
-
-            end
-        end
-
-        context 'with invalid parameters' do
-
-            def invalid_request
-
-                post(:create, params: {
-                    idea: FactoryBot.attributes_for(:idea, title: nil)
-                })
+                it 'requires a new creation of a job post in the database' do
                 
+                    count_before = Idea.count
+                    valid_request
+                    count_after = Idea.count
+                    expect(count_after).to(eq(count_before + 1))
+
+                end
+
+                it 'requires a redirect to the show page for the new idea' do
+
+                    valid_request
+                    idea = Idea.last
+                    expect(response).to(redirect_to(idea))
+
+                end
             end
 
-            it 'requires that the database does not save the new record if idea' do
-                
-                count_before = Idea.count
-                invalid_request
-                count_after = Idea.count
-                expect(count_after).to(eq(count_before))
+            context 'with invalid parameters' do
 
-            end
+                def invalid_request
 
-            it 'requires a render of the new idea template' do
+                    post(:create, params: {
+                        idea: FactoryBot.attributes_for(:idea, title: nil)
+                    })
 
-                invalid_request
-                expect(response).to(render_template(:new))
+                end
 
+                it 'requires that the database does not save the new record if idea' do
+                    
+                    count_before = Idea.count
+                    invalid_request
+                    count_after = Idea.count
+                    expect(count_after).to(eq(count_before))
+
+                end
+
+                it 'requires a render of the new idea template' do
+
+                    invalid_request
+                    expect(response).to(render_template(:new))
+
+                end
             end
         end
     end
