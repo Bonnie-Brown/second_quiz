@@ -1,0 +1,71 @@
+<h1> <%= @idea.title %> </h1>
+<p> <%= @idea.body %> </p>
+<p><small> Created <%= time_ago_in_words(@idea.created_at) %> ago </small></p>
+<p><small> Created by <%= @idea.user.first_name %> </small></p>
+<small>Likes: <%= @idea.likes.count %> </small>
+<div class="d-flex">
+    <% if can? :crud, @idea %>
+        <div class="m-1">
+            <%= link_to 'Edit', edit_idea_path(@idea), class:"btn btn-outline-primary" %>
+        </div>
+    
+        <div class="m-1">
+            <%= button_to 'Delete', idea_path(@idea), method: :delete, form: {data: {turbo_confirm: "Are you sure you would like to proceed?"}}, class:"btn btn-outline-primary" %>
+        </div>
+    <% end %>
+</div>
+
+<div>
+  <% if @like.present? %>
+      <%= button_to "Unlike", like_path(@like), method: :delete, class:"btn btn-outline-primary" %>
+    <% else %>
+      <%= button_to "Like", idea_likes_path(@idea), method: :post, class:"btn btn-outline-primary" %>
+    <% end %>
+</div>
+
+<br>
+
+<h4> Leave a Review </h4>
+
+<% if @review.errors.any? %>
+   <ul>
+     <% @review.errors.full_messages.each do |message| %>
+
+     <li> <%= message %> </li>
+
+      <% end %>
+
+    </ul>
+
+ <% end %>
+
+ <%= form_with(model: [@idea, @review]) do |form| %>
+ 
+ <div>
+
+ <% form.label :body%>
+ 
+ <%= form.text_area :body, placeholder: "What's on your mind?", cols: 50, rows: 5%> 
+ <br>
+ <br>
+ <%= form.submit "Submit", class:"btn btn-outline-primary" %>
+
+ </div>
+ <% end %>
+
+<br>
+
+<div>
+<% @reviews.each do |review| %>
+<div>
+ <%= review.body %> <br>
+
+ <% if can? :crud, review %>
+    <small> Commented <%= time_ago_in_words(review.created_at) %> ago by <%= review.user.first_name %> ⦁ </small>
+    <%=link_to "Delete", idea_review_path(@idea.id, review.id), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %>
+ <% end %>
+</div>
+<br>
+
+<% end %>
+</div>
