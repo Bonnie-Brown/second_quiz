@@ -3,13 +3,15 @@
 <p><small> Created <%= time_ago_in_words(@idea.created_at) %> ago </small></p>
 <p><small> Created by <%= @idea.user.first_name %> </small></p>
 <div class="d-flex">
-    <div class="m-1">
-        <%= link_to 'Edit', edit_idea_path(@idea), class:"btn btn-outline-primary" %>
-    </div>
- 
-    <div class="m-1">
-        <%= button_to 'Delete', idea_path(@idea), method: :delete, form: {data: {turbo_confirm: "Are you sure you would like to proceed?"}}, class:"btn btn-outline-primary" %>
-    </div>
+    <% if can? :crud, @idea %>
+        <div class="m-1">
+            <%= link_to 'Edit', edit_idea_path(@idea), class:"btn btn-outline-primary" %>
+        </div>
+    
+        <div class="m-1">
+            <%= button_to 'Delete', idea_path(@idea), method: :delete, form: {data: {turbo_confirm: "Are you sure you would like to proceed?"}}, class:"btn btn-outline-primary" %>
+        </div>
+    <% end %>
 </div>
 <br>
 
@@ -45,11 +47,13 @@
 
 <div>
 <% @reviews.each do |review| %>
-
 <div>
  <%= review.body %> <br>
- <small> Commented <%= time_ago_in_words(review.created_at) %> ago by <%= review.user.first_name %> ⦁ </small>
- <%=link_to "Delete", idea_review_path(@idea.id, review.id), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %>
+
+ <% if can? :crud, review %>
+    <small> Commented <%= time_ago_in_words(review.created_at) %> ago by <%= review.user.first_name %> ⦁ </small>
+    <%=link_to "Delete", idea_review_path(@idea.id, review.id), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %>
+ <% end %>
 </div>
 <br>
 

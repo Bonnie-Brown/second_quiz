@@ -9,5 +9,9 @@ Rails.application.routes.draw do
   end
 
   root 'ideas#index'
+
+  resources :users
+
+  resource :session, only: [:new, :create, :destroy]
   
 end

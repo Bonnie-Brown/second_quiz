@@ -4,6 +4,10 @@ class IdeasController < ApplicationController
 
     before_action :find_idea, only: [:edit, :update, :show, :destroy]
 
+    before_action :authenticate_user!, except: [:index, :show]
+
+    before_action :authorize_user!, only: [:edit, :update, :destroy]
+
     # Actions
     
     # Read
@@ -23,6 +27,7 @@ class IdeasController < ApplicationController
 
     def create
         @idea = Idea.new(idea_params)
+        @idea.user = current_user
         
         if @idea.save
             flash[:success] = "Idea successfully created!"
@@ -62,6 +67,10 @@ class IdeasController < ApplicationController
 
     def idea_params
         params.require(:idea).permit(:title, :body)
+    end
+
+    def authorize_user!
+        redirect_to root_path, alert: "Not authorized to change post." unless can?(:crud, @idea)
     end
 
 end
