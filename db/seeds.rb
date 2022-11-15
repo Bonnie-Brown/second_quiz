@@ -2,6 +2,7 @@
 Idea.destroy_all
 Review.destroy_all
 User.destroy_all
+Like.destroy_all
 
 PASSWORD = '123'
 
@@ -44,6 +45,7 @@ end
         rand(1..5).times do
             Review.create(body: Faker::Hacker.say_something_smart, idea: i, user: users.sample)
         end
+        i.likers = users.shuffle.slice(0, rand(users.count))
     end
 
 end
@@ -54,6 +56,7 @@ reviews = Review.all
 puts Cowsay.say("Generated #{ideas.count} ideas.", :elephant)
 puts Cowsay.say("Generated #{reviews.count} reviews.", :bunny)
 puts Cowsay.say("Generated #{users.count} users.", :dragon)
+puts Cowsay.say("Genereated #{Like.count} likes", :koala)
 
 
 

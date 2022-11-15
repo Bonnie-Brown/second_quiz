@@ -15,13 +15,13 @@
     <% end %>
 </div>
 
-<small>
+<div>
   <% if @like.present? %>
-      <%= button_to "Unlike", like_path(@like), method: :delete %>
+      <%= button_to "Unlike", like_path(@like), method: :delete, class:"btn btn-outline-primary" %>
     <% else %>
-      <%= button_to "Like", idea_likes_path(@idea), method: :post %>
+      <%= button_to "Like", idea_likes_path(@idea), method: :post, class:"btn btn-outline-primary" %>
     <% end %>
-</small>
+</div>
 
 <br>
 
